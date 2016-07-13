@@ -1,0 +1,85 @@
+#!/usr/bin/env python
+
+# Copyright (c) 2016 Tommi Airikka
+# License: GPLv2
+
+import sys, struct, serial
+
+def _usage():
+    print(sys.argv[0] + " /dev/mydevice /path/to/output/file")
+
+# Pack little endian
+def _ple(i):
+    return struct.pack("<I", i)
+
+def _get_real_values((val1,val2)):
+    
+    oval1 = ord(val1)
+    oval2 = ord(val2)
+    v1 = oval1 - 0x80
+    v2 = oval2 - 0x80
+    if v1 == 0 or oval1 == 0xFF:
+        v1 = 127
+    if v2 == 0 or oval2 == 0xFF:
+        v2 = 255
+    return (v1,v2)
+
+def _parse_list(toparse, parsed):
+    if not toparse:
+        return
+
+    fs = (toparse[0],toparse[1])
+    r = toparse[2:]
+    if fs == ('\x0f','\x80'):
+        _parse_list(r, parsed)
+    else:
+        (f,s) = _get_real_values(fs)
+        if f >= 0 and s >= 0:
+            parsed.append(f)
+            parsed.append(s)
+            _parse_list(r, parsed)
+        else:
+            _parse_list(r, parsed)
+
+if len(sys.argv) != 3:
+    _usage()
+    exit(42)
+
+device = sys.argv[1]
+outfile = sys.argv[2]
+ser = serial.Serial()
+ser.baudrate = 115200               # 115200
+ser.bytesize = serial.EIGHTBITS     # 8
+ser.parity = serial.PARITY_NONE     # N
+ser.stopbits = serial.STOPBITS_ONE  # 1
+ser.xonxoff = 1                     # XON/XOFF flow control
+ser.timeout = 1
+ser.port = device
+
+f = open(outfile, 'wb')
+
+ser.open()
+ser.write(b'\x7d\x81\xa6')
+raw = ser.readall()
+ser.close()
+
+data = list(raw)
+
+parsed = []
+_parse_list(data, parsed)
+
+total_len = len(parsed) / 2 # 1Hz, two values (pulse and sats)
+
+zeroval = _ple(0)
+f.write(_ple(856))
+f.write(_ple(1))
+for _ in range(212):
+    f.write(zeroval)
+f.write(_ple(1))
+for _ in range(55):
+    f.write(zeroval)
+f.write(_ple(total_len))
+for e in parsed:
+    f.write(chr(e))
+
+f.close()
