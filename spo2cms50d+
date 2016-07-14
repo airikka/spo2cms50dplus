@@ -25,21 +25,16 @@ def _get_real_values((val1,val2)):
     return (v1,v2)
 
 def _parse_list(toparse, parsed):
-    if not toparse:
-        return
-
-    fs = (toparse[0],toparse[1])
-    r = toparse[2:]
-    if fs == ('\x0f','\x80'):
-        _parse_list(r, parsed)
-    else:
-        (f,s) = _get_real_values(fs)
-        if f >= 0 and s >= 0:
-            parsed.append(f)
-            parsed.append(s)
-            _parse_list(r, parsed)
+    while toparse:
+        if len(toparse) > 1:
+            fs = (toparse.pop(0),toparse.pop(0))
+            if not fs == ('\x0f','\x80'):
+                (f,s) = _get_real_values(fs)
+                if f >= 0 and s >= 0:
+                    parsed.append(f)
+                    parsed.append(s)
         else:
-            _parse_list(r, parsed)
+            toparse.pop(0)
 
 if len(sys.argv) != 3:
     _usage()
@@ -56,8 +51,6 @@ ser.xonxoff = 1                     # XON/XOFF flow control
 ser.timeout = 1
 ser.port = device
 
-f = open(outfile, 'wb')
-
 ser.open()
 ser.write(b'\x7d\x81\xa6')
 raw = ser.readall()
@@ -65,10 +58,16 @@ ser.close()
 
 data = list(raw)
 
+if len(data) <= 1:
+    print("No data received. Is the device on?")
+    exit(43)
+
 parsed = []
 _parse_list(data, parsed)
 
 total_len = len(parsed) / 2 # 1Hz, two values (pulse and sats)
+
+f = open(outfile, 'wb')
 
 zeroval = _ple(0)
 f.write(_ple(856))
