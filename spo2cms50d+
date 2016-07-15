@@ -6,7 +6,7 @@
 import sys, struct, serial, argparse
 from dateutil.parser import parse
 
-parser = argparse.ArgumentParser(description='Download stored data from CMS50D+ oximeter.')
+parser = argparse.ArgumentParser(description='Download stored data from a CMS50D+ oximeter.')
 parser.add_argument('device', type=str, help='path to device file')
 parser.add_argument('outfile', type=str, help='output file path')
 parser.add_argument('-s', '--start-time', dest='starttime', type=str, help='start time (\"YYYY-MM-DD HH:MM:SS\")')

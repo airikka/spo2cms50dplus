@@ -13,6 +13,9 @@ Usage:
 5. Run this spo2cms50d+ script (see example given below)
 6. Exit the menu on the CMS50D+
 
-
 Example:
 ./spo2cms50d+ /dev/ttyUSB0 ~/my_cms50dplus_file.SpO2
+
+
+It is also possible to set the start time.
+Run "./spo2cms50d+ --help" for more details.
