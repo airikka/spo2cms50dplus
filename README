@@ -5,7 +5,9 @@ This script is only tested together with a CMS50D+ with firmware version 4.6.
 
 There is a reason to believe that CMS50D+ with firmware version 4.6 differs in serial communication compared to older versions, as other applications seems to use other parameters and values when communicating.
 
-Usage:
+Usage
+=====
+
 1. Plug in the USB cable
 2. Start the CMS50D+ (mine says Ver4.6)
 3. Press and hold the button to enter the menu
@@ -16,6 +18,30 @@ Usage:
 Example:
 ./spo2cms50d+ /dev/ttyUSB0 ~/my_cms50dplus_file.SpO2
 
-
 It is also possible to set the start time.
 Run "./spo2cms50d+ --help" for more details.
+
+
+Note:
+The user executing the command must have read and write permissions to the device.
+The recommended way to achieve this is to add the user to the group that is allowed to communicate with the device.
+It is also possible to run this command as root. But it is highly unrecommended, as root, to execute any code just downloaded from the Internet without any code review!
+How to add a user to the correct group is distribution specific, but here's one way that should work in most cases:
+
+Suppose user "myuser" wants to access /dev/ttyUSB0
+
+# Here we can tell that group "dialout" have read/write permissions to /dev/ttyUSB0:
+$ ls -l /dev/ttyUSB0
+crw-rw---- 1 root dialout 188, 0 Jul 20 09:47 /dev/ttyUSB0
+
+# The following command will add user "myuser" in the "dialout" group. In this case, sudo is used to get administrative rights:
+$ sudo adduser myuser dialout
+
+# Note, the user has to logout from all his/her sessions to get the new group access.
+
+
+
+Disclaimer
+==========
+Use at own risk!
+I cannot be held responsible for any damage caused by this software.
