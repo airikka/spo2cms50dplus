@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # Copyright (c) 2016 Tommi Airikka <tommi@airikka.net>
 # License: GPLv2
@@ -28,10 +28,9 @@ ser = serial.Serial()
 def _ple(i):
     return struct.pack("<I", i)
 
-def _get_real_values((val1,val2)):
+def _get_real_values(fs):
     
-    oval1 = ord(val1)
-    oval2 = ord(val2)
+    (oval1,oval2) = fs
     v1 = oval1 - 0x80
     v2 = oval2 - 0x80
     if v1 == 0 or oval1 == 0xFF:
@@ -88,7 +87,7 @@ def parse_raw_data(data):
     return parsed
 
 def get_len_of_parsed_data(parsed):
-    return len(parsed) / 2 # 1Hz, two values (pulse and sats)
+    return int(len(parsed) / 2) # 1Hz, two values (pulse and sats)
 
 def write_to_file(parsed, total_len, f):
     sys.stdout.write("Writing to file...", )
@@ -104,7 +103,7 @@ def write_to_file(parsed, total_len, f):
         f.write(zeroval)
     f.write(_ple(total_len))
     for e in parsed:
-        f.write(chr(e))
+        f.write(chr(e).encode('latin1'))
 
 def change_starttime(f):
     if starttime != None:
