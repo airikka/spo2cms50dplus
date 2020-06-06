@@ -1,4 +1,4 @@
-spo2cms50d+ - Downloads recorded data from a CMS50D+ Pulse Oximeter (Python 3 version)
+spo2cms50d+ - Downloads recorded data from a CMS50D+ Pulse Oximeter **(Python 3 version)**
 
 A Python script that downloads recorded data from CMS50D+ Pulse Oximeters and stores it in SpO2 format.
 This script is only tested together with a CMS50D+ (unknown firmware version but bought in 2020).
