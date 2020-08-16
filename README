@@ -1,25 +1,23 @@
-spo2cms50d+ - Downloads recorded data from a CMS50D+ Pulse Oximeter (firmware version 4.6)
+spo2cms50d+ - Downloads recorded data from a CMS50D+ Pulse Oximeter **(Python 3 version)**
 
 A Python script that downloads recorded data from CMS50D+ Pulse Oximeters and stores it in SpO2 format.
-This script is only tested together with a CMS50D+ with firmware version 4.6.
+This script is only tested together with a CMS50D+ (unknown firmware version but bought in 2020).
 
-There is a reason to believe that CMS50D+ with firmware version 4.6 differs in serial communication compared to older versions, as other applications seems to use other parameters and values when communicating.
+There is a reason to believe that some new CMS50D+ differ in serial communication compared to older versions, as other applications seems to use other parameters and values when communicating.
 
 Usage
 =====
 
 1. Plug in the USB cable
-2. Start the CMS50D+ (mine says Ver4.6)
-3. Press and hold the button to enter the menu
-4. Don't press anything else, leave it in the menu (this way the device will not shut down automatically)
-5. Run this spo2cms50d+ script (see example given below)
-6. Exit the menu on the CMS50D+
+2. Start the CMS50D+ by pressing the button
+3. Run this spo2cms50d+ script (see example given below)
 
 Example:
 ./spo2cms50d+ /dev/ttyUSB0 ~/my_cms50dplus_file.SpO2
 
-It is also possible to set the start time.
-Run "./spo2cms50d+ --help" for more details.
+It is also possible to set the start time, patient name, age, height, weight, device model, patient sex, comment and patient nationality
+Run "./spo2cms50d+" for more details.
+This script runs with Python 3.
 
 
 Note:
